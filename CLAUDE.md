@@ -189,25 +189,43 @@ npx prisma migrate deploy # Deploy migration (production/Vercel)
 The app will crash if Prisma Client is out of sync with schema.
 
 **Note on databases:**
-- **Local development:** Uses SQLite (set `provider = "sqlite"` in schema.prisma temporarily)
-- **Production (Vercel):** Uses PostgreSQL (provider should be `"postgresql"`)
-- To switch: change provider in schema, update DATABASE_URL, run migrations
+- **Local development:** Can use PostgreSQL (recommended) or SQLite
+- **Production (Vercel):** Uses PostgreSQL with connection pooling (pgbouncer)
+- **Connection pooling:** Prisma uses `DATABASE_URL` (pooled) for queries and `DIRECT_URL` (non-pooled) for migrations
+
+**PostgreSQL Connection Ports:**
+- Port **6543**: Pooled connection via pgbouncer (for runtime queries)
+- Port **5432**: Direct PostgreSQL connection (for migrations)
 
 ### Environment Variables
 
 **Local development** (`.env`):
 ```
-DATABASE_URL="file:./dev.db"
+# Pooled connection (for queries)
+DATABASE_URL="postgresql://user:pass@host:6543/db?pgbouncer=true&connect_timeout=15"
+
+# Direct connection (for migrations)
+DIRECT_URL="postgresql://user:pass@host:5432/db"
+
 JWT_SECRET="<random-secret>"
 ENCRYPTION_KEY="<legacy-not-used-but-keep-for-compat>"
 ```
 
 **Production on Vercel** (set in Vercel Dashboard):
 ```
-DATABASE_URL="postgresql://user:pass@host:5432/dbname"
+# REQUIRED: Pooled connection with pgbouncer
+DATABASE_URL="postgresql://user:pass@host:6543/db?pgbouncer=true&connect_timeout=15"
+
+# REQUIRED: Direct connection for migrations
+DIRECT_URL="postgresql://user:pass@host:5432/db"
+
 JWT_SECRET="<strong-random-secret-min-32-chars>"
 ENCRYPTION_KEY="<legacy-not-used-but-keep-for-compat>"
 ```
+
+**For Supabase specifically:**
+- Use `POSTGRES_PRISMA_URL` for `DATABASE_URL` (includes `pgbouncer=true`)
+- Use `POSTGRES_URL_NON_POOLING` for `DIRECT_URL`
 
 The `ENCRYPTION_KEY` env var is legacy from server-side encryption. It's no longer used (E2E uses client-derived keys), but exists for backwards compatibility.
 
@@ -237,6 +255,9 @@ When modifying UI, maintain this theme. See `app/globals.css` for global styles.
 3. **Trying to decrypt without encryption key in context** → Returns garbage/errors
 4. **Changing encryption algorithm** → Breaks all existing notes (no migration path)
 5. **Using server-side encryption functions** → The old `lib/crypto.ts` is unused, client uses `lib/crypto-client.ts`
+6. **Missing `DIRECT_URL` in Vercel** → Migrations fail or prepared statement errors
+7. **Using wrong port for DATABASE_URL** → Use 6543 (pooled) not 5432 (direct)
+8. **Forgetting `pgbouncer=true` in DATABASE_URL** → Prepared statement conflicts and bind parameter errors
 
 ## Testing the E2E Flow
 
