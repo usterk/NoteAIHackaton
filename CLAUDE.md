@@ -8,10 +8,11 @@ This is a secure note-taking application built for a hackathon with **true end-t
 
 **Key Tech Stack:**
 - Next.js 14 (App Router)
-- Prisma ORM with SQLite
+- Prisma ORM with PostgreSQL (production) / SQLite (local dev)
 - TypeScript
 - Tailwind CSS (Cyberpunk theme)
 - Web Crypto API (E2E encryption)
+- Deployed on Vercel
 
 ## Development Commands
 
@@ -181,21 +182,36 @@ All API routes are in `app/api/`:
 **CRITICAL:** After changing `prisma/schema.prisma`, you MUST:
 ```bash
 npx prisma generate    # Regenerate TypeScript types
-npx prisma migrate dev # Create migration
+npx prisma migrate dev # Create migration (local dev)
+npx prisma migrate deploy # Deploy migration (production/Vercel)
 ```
 
 The app will crash if Prisma Client is out of sync with schema.
 
+**Note on databases:**
+- **Local development:** Uses SQLite (set `provider = "sqlite"` in schema.prisma temporarily)
+- **Production (Vercel):** Uses PostgreSQL (provider should be `"postgresql"`)
+- To switch: change provider in schema, update DATABASE_URL, run migrations
+
 ### Environment Variables
 
-Required in `.env`:
+**Local development** (`.env`):
 ```
 DATABASE_URL="file:./dev.db"
 JWT_SECRET="<random-secret>"
 ENCRYPTION_KEY="<legacy-not-used-but-keep-for-compat>"
 ```
 
+**Production on Vercel** (set in Vercel Dashboard):
+```
+DATABASE_URL="postgresql://user:pass@host:5432/dbname"
+JWT_SECRET="<strong-random-secret-min-32-chars>"
+ENCRYPTION_KEY="<legacy-not-used-but-keep-for-compat>"
+```
+
 The `ENCRYPTION_KEY` env var is legacy from server-side encryption. It's no longer used (E2E uses client-derived keys), but exists for backwards compatibility.
+
+**Important:** Never commit `.env` to git. Use Vercel Dashboard for production secrets.
 
 ### Docker Considerations
 
@@ -231,3 +247,19 @@ To verify encryption works:
 4. Refresh page - note decrypts correctly
 5. Logout and login - note still decrypts
 6. Try decrypting DB content manually → impossible without user password
+
+## Deployment to Vercel
+
+See **VERCEL_DEPLOYMENT.md** for complete step-by-step guide.
+
+**Quick steps:**
+1. Create PostgreSQL database (Vercel Postgres, Neon, or Supabase)
+2. Import GitHub repo to Vercel
+3. Set environment variables in Vercel Dashboard
+4. Deploy - Vercel runs migrations automatically via `vercel.json`
+5. Test E2E encryption on production URL
+
+**Key files for Vercel:**
+- `vercel.json` - Build configuration (runs Prisma migrations)
+- `package.json` - `postinstall` script generates Prisma Client
+- `prisma/schema.prisma` - Uses PostgreSQL provider for production
