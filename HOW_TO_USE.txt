@@ -1,0 +1,147 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║   📖 JAK KORZYSTAĆ Z SECURE NOTES - Szybki Przewodnik 📖       ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+
+🚀 URUCHOMIENIE:
+
+1. Uruchom: ./start.sh  (lub: docker-compose up --build)
+2. Otwórz: http://localhost:3000
+3. Zarejestruj się i zaloguj
+
+═══════════════════════════════════════════════════════════════════
+
+📁 JAK TWORZYĆ FOLDERY:
+
+1. W lewym panelu znajdź "FOLDERY"
+2. Kliknij przycisk "+" obok nagłówka
+3. Wpisz nazwę (np. "Praca", "Dom")
+4. Wybierz kolor (kliknij na kwadrat)
+5. Kliknij "Utwórz"
+
+Foldery pojawiają się w lewym panelu z liczbą notatek.
+
+═══════════════════════════════════════════════════════════════════
+
+🏷️  JAK TWORZYĆ TAGI:
+
+1. W lewym panelu znajdź "TAGI"
+2. Kliknij przycisk "+" obok nagłówka
+3. Wpisz nazwę (np. "Pilne", "TODO")
+4. Wybierz kolor (kliknij na kwadrat)
+5. Kliknij "Utwórz"
+
+Tagi pojawiają się w lewym panelu z liczbą notatek.
+
+═══════════════════════════════════════════════════════════════════
+
+📝 JAK DODAĆ TAGI DO NOTATKI:
+
+PODCZAS TWORZENIA NOTATKI:
+1. Kliknij "+ Nowa notatka"
+2. Wpisz tytuł i treść
+3. W sekcji "Tagi" KLIKNIJ na nazwy tagów które chcesz dodać
+4. Zaznaczone tagi będą NIEBIESKIE
+5. Kliknij "Zapisz"
+
+PODCZAS EDYCJI NOTATKI:
+1. Otwórz notatkę
+2. Kliknij "Edytuj"
+3. W sekcji "Tagi" KLIKNIJ na tagi aby dodać/usunąć
+4. Niebieskie = zaznaczone, szare = odznaczone
+5. Kliknij "Zapisz"
+
+WAŻNE: Możesz dodać WIELE tagów do jednej notatki!
+
+═══════════════════════════════════════════════════════════════════
+
+🔄 JAK PRZENOSIĆ NOTATKI MIĘDZY FOLDERAMI:
+
+METODA 1 - Podczas tworzenia:
+1. Kliknij "+ Nowa notatka"
+2. W polu "Folder" wybierz folder z listy
+3. Zapisz
+
+METODA 2 - Podczas edycji:
+1. Otwórz notatkę
+2. Kliknij "Edytuj"
+3. W polu "Folder" wybierz nowy folder
+   (lub "Brak folderu" aby usunąć z folderu)
+4. Kliknij "Zapisz"
+
+═══════════════════════════════════════════════════════════════════
+
+🔍 JAK FILTROWAĆ NOTATKI:
+
+PO FOLDERZE:
+- Kliknij nazwę folderu w lewym panelu
+- Zobaczysz tylko notatki z tego folderu
+
+PO TAGU:
+- Kliknij nazwę tagu w lewym panelu
+- Zobaczysz tylko notatki z tym tagiem
+
+WSZYSTKIE:
+- Kliknij "📝 Wszystkie notatki" w lewym panelu
+
+═══════════════════════════════════════════════════════════════════
+
+🔐 WAŻNE O SZYFROWANIU:
+
+⚠️  Szyfrowanie NIE JEST end-to-end!
+
+CO TO ZNACZY:
+- Notatki SĄ szyfrowane w bazie danych (AES-256)
+- Notatki NIE SĄ szyfrowane w przeglądarce
+- Serwer WIDZI treść notatki przed zaszyfrowaniem
+- To chroni przed kradzieżą bazy, ale NIE przed adminem serwera
+
+To jest "encryption at rest" (szyfrowanie w spoczynku),
+a nie "end-to-end encryption".
+
+Szczegóły: zobacz plik ENCRYPTION_EXPLAINED.md
+
+═══════════════════════════════════════════════════════════════════
+
+💡 WSKAZÓWKI:
+
+ORGANIZACJA:
+- Foldery = główne kategorie (Praca, Dom, Projekty)
+- Tagi = krzyżujące się kategorie (Pilne, TODO, Pomysł)
+- Jedna notatka = jeden folder + wiele tagów
+
+PRZYKŁAD:
+Notatka: "Prezentacja dla klienta"
+Folder: Praca
+Tagi: Pilne, TODO
+
+═══════════════════════════════════════════════════════════════════
+
+📚 DOKUMENTACJA:
+
+1. USER_GUIDE.md          - Pełny przewodnik krok po kroku
+2. ENCRYPTION_EXPLAINED.md - Jak działa szyfrowanie
+3. README.md              - Pełna dokumentacja techniczna
+4. UPDATES_SUMMARY.md     - Co zostało dodane/naprawione
+
+═══════════════════════════════════════════════════════════════════
+
+✨ FUNKCJE:
+
+✅ Tworzenie notatek z folderami i tagami
+✅ Edycja notatek (tytuł, treść, folder, tagi)
+✅ Archiwizowanie notatek
+✅ Usuwanie notatek (z potwierdzeniem)
+✅ Filtrowanie po folderach i tagach
+✅ Kolorowe foldery (8 kolorów)
+✅ Kolorowe tagi (8 kolorów)
+✅ Dark mode
+✅ Szyfrowanie w bazie danych (AES-256)
+
+═══════════════════════════════════════════════════════════════════
+
+🎉 MIŁEGO KORZYSTANIA! 🎉
+

@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // bcrypt hash - for authentication only
+  salt      String   // Hex string - for E2E encryption key derivation
+  createdAt DateTime @default(now())
+  notes     Note[]
+  folders   Folder[]
+  tags      Tag[]
+}
+
+model Note {
+  id               String   @id @default(uuid())
+  encryptedTitle   String   // E2E encrypted title (Base64)
+  encryptedContent String   // E2E encrypted content (Base64)
+  iv               String   // Initialization vector (Base64) - unique per note
+  isArchived       Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId         String?
+  folder           Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  tags             Tag[]
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  color     String   @default("#3b82f6")
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String
+  color     String   @default("#10b981")
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+}
