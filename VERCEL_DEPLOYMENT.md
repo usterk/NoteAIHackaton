@@ -29,8 +29,11 @@ Ten przewodnik pomoże Ci wdrożyć aplikację Secure Notes na Vercel z bazą da
 
 1. Załóż konto na [Supabase.com](https://supabase.com)
 2. Utwórz nowy projekt
-3. Przejdź do **Settings** → **Database**
-4. Skopiuj **Connection string** (tryb: Session)
+3. Przejdź do **Project Settings** → **Database**
+4. W sekcji **Connection string** wybierz **Session mode** (nie Pooling!)
+5. **WAŻNE:** Dla Vercel użyj **Connection Pooling** → skopiuj `POSTGRES_PRISMA_URL`
+   - Zawiera parametr `pgbouncer=true` (wymagany dla Prisma)
+   - Port 6543 (nie 5432)
 
 ## Krok 2: Wdrożenie na Vercel
 
@@ -43,18 +46,23 @@ Ten przewodnik pomoże Ci wdrożyć aplikację Secure Notes na Vercel z bazą da
 
 ### Konfiguracja zmiennych środowiskowych
 
-W sekcji **Environment Variables** dodaj:
+W sekcji **Environment Variables** dodaj **TYLKO TE 3 ZMIENNE**:
 
 ```env
-DATABASE_URL=postgresql://user:pass@host:5432/dbname
-JWT_SECRET=twoj-bardzo-długi-i-losowy-sekret-min-32-znaki
-ENCRYPTION_KEY=legacy-key-not-used-but-keep-for-compat
+DATABASE_URL=postgres://postgres.xyktcpaliudspskqdhgf:t3ixhi4U0O2n6jbi@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require&pgbouncer=true
+JWT_SECRET=wygeneruj-silny-losowy-sekret-min-32-znaki
+ENCRYPTION_KEY=legacy-not-used
 ```
 
 **Ważne:**
-- `DATABASE_URL` - connection string z kroku 1
-- `JWT_SECRET` - wygeneruj silny, losowy ciąg znaków (min. 32 znaki)
-- `ENCRYPTION_KEY` - legacy, nie jest używany w E2E, ale zostaw dla kompatybilności
+- `DATABASE_URL` - dla Supabase użyj **POSTGRES_PRISMA_URL** (z pgbouncer i portem 6543)
+- `JWT_SECRET` - wygeneruj własny silny, losowy ciąg znaków (min. 32 znaki) - patrz niżej
+- `ENCRYPTION_KEY` - legacy, nie jest używany w E2E, zostaw jako `legacy-not-used`
+
+**NIE POTRZEBUJESZ:**
+- ❌ `SUPABASE_URL`, `SUPABASE_ANON_KEY` - tylko gdybyś używał Supabase Auth SDK
+- ❌ `NEXT_PUBLIC_*` - nie używasz Supabase SDK w przeglądarce
+- ❌ `POSTGRES_USER`, `POSTGRES_HOST` itp. - są już w `DATABASE_URL`
 
 ### Wygeneruj JWT_SECRET
 
